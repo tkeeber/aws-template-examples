@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda NodeJS Template
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+
+  Function:
+    Timeout: 3
+
+Resources:
+
+  SQSQueueName:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: SQSQueue
+
+  SQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties: 
+      PolicyDocument: 
+        Id: MyQueuePolicy
+        Statement: 
+          -   
+            Sid: "Allow-SendMessage-To-Both-Queues-From-SNS-Topic"
+            Effect: Allow
+            Principal: 
+              AWS: "*"
+            Action: 
+              - 
+                "sqs:SendMessage"
+            Resource: "*"
+            Condition: 
+             ArnEquals:
+               "aws:SourceArn": 
+                  Ref: SnsTopic
+      Queues:
+        -
+          !Ref SQSQueue
+
+  SnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: SnsTopic
+      Subscription:
+        -
+          Endpoint: !GetAtt SQSQueue.Arn
+          Protocol: sqs
