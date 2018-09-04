@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda NodeJS Template
+
+Resources:
+
+  HelloWorldFunction2:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: packages/apps/lambda-hello-world-2/.build
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          QUEUE_URI: !Ref HelloWorldQueue
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt HelloWorldQueue.QueueName
+          
+  HelloWorldQueue:
+    Type: AWS::SQS::Queue
+
+Outputs:
+
+  HelloWorldFunction2:
+    Description: "Hello World Function 2 ARN"
+    Value: !GetAtt HelloWorldFunction2.Arn
+
+  HelloWorldQueue:
+    Description: "Hello World Queue ARN"
+    Value: !GetAtt HelloWorldQueue.Arn

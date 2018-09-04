@@ -9,7 +9,7 @@ Globals:
     Timeout: 3
 
 Resources:
-
+  
   SQSQueueName:
     Type: AWS::SQS::Queue
     Properties:
