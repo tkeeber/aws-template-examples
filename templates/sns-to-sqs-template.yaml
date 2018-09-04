@@ -46,3 +46,13 @@ Resources:
         -
           Endpoint: !GetAtt SQSQueue.Arn
           Protocol: sqs
+
+ HelloWorldFunction1:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: packages/apps/lambda-hello-world-1/.build
+      Handler: index.handler
+      Runtime: nodejs8.10
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          key: value
